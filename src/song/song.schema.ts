@@ -2,7 +2,7 @@
 
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { IsNotEmpty, IsNumber, IsString } from "class-validator";
-import { SchemaOptions } from "mongoose";
+import { Document, SchemaOptions } from "mongoose";
 
 // 스키마 옵션
 const options: SchemaOptions = {
@@ -24,7 +24,7 @@ export class Song extends Document {
     })
     @IsString()
     @IsNotEmpty()
-    songName: String;
+    songName: string;
 
     @Prop({
         required: true,
@@ -45,7 +45,7 @@ export class Song extends Document {
     })
     @IsString()
     @IsNotEmpty()
-    difficult: string;
+    difficulty: string;
     
     @Prop({
         required: true,
@@ -59,7 +59,9 @@ export class Song extends Document {
     @IsNotEmpty()
     constant: number;
     
-    @Prop()
+    @Prop({
+        required: true,
+    })
     @IsString()
     @IsNotEmpty()
     genre: string;
@@ -67,9 +69,11 @@ export class Song extends Document {
     @Prop()
     @IsString()
     @IsNotEmpty()
-    pattener: string;
+    patterner: string;
     
-    @Prop()
+    @Prop({
+        required: true,
+    })
     @IsString()
     @IsNotEmpty()
     version: string;

@@ -1,7 +1,11 @@
-import { Controller, Delete, Get, Patch, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Patch, Post } from '@nestjs/common';
+import { SongService } from './song.service';
 
-@Controller('songs')
+@Controller('song')
 export class SongController {
+    constructor(
+        private readonly songService: SongService
+    ) {}
 
     @Get()
     getAllSongs(): string {
@@ -9,8 +13,8 @@ export class SongController {
     }
 
     @Post()
-    createNewSong(): any {
-        return ;
+    async createSong(@Body() body: any) {
+        return await this.songService.createSong(body);
     }
 
     @Patch()

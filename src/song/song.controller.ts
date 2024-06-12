@@ -1,7 +1,7 @@
 import { Controller, Delete, Get, Patch, Post } from '@nestjs/common';
 
 @Controller('songs')
-export class SongsController {
+export class SongController {
 
     @Get()
     getAllSongs(): string {

@@ -1,11 +1,15 @@
 // mongoose를 이용하여 스키마 설계
 
-import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
+import { Prop, Schema, SchemaFactory, SchemaOptions } from "@nestjs/mongoose";
 import { IsNotEmpty, IsNumber, IsString } from "class-validator";
-import { Document, SchemaOptions } from "mongoose";
+import mongoose, { Document  } from "mongoose";
+import { Pattern } from "src/pattern/pattern.schema";
 
 // 스키마 옵션
 const options: SchemaOptions = {
+    // 스키마(DB에 생성될 폴더) 이름 지정
+    collection: 'song',
+    // createAt, updatedAt을 찍어줌
     timestamps: true,
 }
 
@@ -15,6 +19,7 @@ export class Song extends Document {
     // @Prop() 데코레이터를 통해 required나 unique, default value등의 옵션 지정이 가능
     @Prop({
         required: true,
+        unique: true
     })
     @IsNotEmpty()
     songNumber: number;
@@ -45,38 +50,13 @@ export class Song extends Document {
     })
     @IsString()
     @IsNotEmpty()
-    difficulty: string;
-    
-    @Prop({
-        required: true,
-    })
-    @IsString()
-    @IsNotEmpty()
-    level: string;
-
-    @Prop()
-    @IsNumber()
-    @IsNotEmpty()
-    constant: number;
-    
-    @Prop({
-        required: true,
-    })
-    @IsString()
-    @IsNotEmpty()
     genre: string;
-    
-    @Prop()
-    @IsString()
-    @IsNotEmpty()
-    patterner: string;
-    
+
     @Prop({
-        required: true,
+        type: [mongoose.Types.ObjectId],
+        ref: "Pattern"
     })
-    @IsString()
-    @IsNotEmpty()
-    version: string;
+    patterns: Pattern
 }
 
 // Song 클래스를 스키마로 만듦

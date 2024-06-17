@@ -2,7 +2,7 @@
 
 import { Prop, Schema, SchemaFactory, SchemaOptions } from "@nestjs/mongoose";
 import { IsNotEmpty, IsNumber, IsString } from "class-validator";
-import mongoose, { Document  } from "mongoose";
+import mongoose, { Document, Types  } from "mongoose";
 import { Pattern } from "src/pattern/schemas/pattern.schema";
 
 // 스키마 옵션
@@ -48,11 +48,11 @@ export class Song extends Document {
 
     @Prop({
         type: [{
-            type: mongoose.Schema.Types.ObjectId,
+            type: Types.ObjectId,
             ref: 'Pattern',
         }]
     })
-    patterns: Pattern[];
+    patterns: Types.ObjectId[];
 }
 
 // Song 클래스를 스키마로 만듦

@@ -1,5 +1,5 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
 import { Pattern } from './schemas/pattern.schema';
 import { InjectModel } from '@nestjs/mongoose';
 import { Song } from 'src/song/schemas/song.schema';
@@ -29,7 +29,26 @@ export class PatternService {
             type,
             version,
             song: song._id,
-        });
-        return newPattern.save();
+        }); 
+
+        const savedPattern = await newPattern.save();
+        
+        // savedPattern._id를 Types.ObjectId로 강제로 캐스팅함.
+        // 해당 방법으로 TS의 타입 체킹을 피할 수 있으나, 타입 안정성을 해칠 수 있음.
+        // song.patterns.push(savedPattern._id as Types.ObjectId);
+
+        // 명확한 타입 캐스팅
+        const patternId: Types.ObjectId = savedPattern._id as Types.ObjectId;
+
+        song.patterns.push(patternId);
+
+        song.save();
+
+        return savedPattern;
     }
+
+    /**
+     * TODO
+     * [ ]: pattern delete 제작(Song Schema의 patterns도 변경해야함)
+     */
 }

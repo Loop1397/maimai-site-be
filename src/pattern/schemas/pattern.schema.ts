@@ -47,7 +47,7 @@ export class Pattern extends Document {
 
     @Prop({
         required: true,
-        type: mongoose.Schema.Types.ObjectId,
+        type: Types.ObjectId,
         ref: 'Song',
     })
     @IsNotEmpty()

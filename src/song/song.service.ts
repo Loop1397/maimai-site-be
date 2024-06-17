@@ -1,7 +1,7 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Song } from './schemas/song.schema';
-import { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
 
 @Injectable()
 export class SongService {
@@ -29,5 +29,9 @@ export class SongService {
         });
 
         return song;
+    }
+
+    async addPattern(patternId: Types.ObjectId, song: Song) {
+        console.log(patternId, song);
     }
 }

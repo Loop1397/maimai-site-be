@@ -1,4 +1,4 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Param, Patch, Post } from '@nestjs/common';
 import { PatternService } from './pattern.service';
 
 @Controller('pattern')
@@ -8,7 +8,17 @@ export class PatternController {
     ) {}
 
     @Post()
-    async create(@Body() body) {
+    async createPattern(@Body() body) {
         return this.patternService.createPattern(body);
+    }
+
+    @Patch(':id')
+    async updatePattern(@Body() body) {
+
+    }
+
+    @Delete(':id')
+    async deletePattern(@Param('id') id) {
+        return this.patternService.deletePattern(id);
     }
 }

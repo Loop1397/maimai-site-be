@@ -51,4 +51,16 @@ export class PatternService {
      * TODO
      * [ ]: pattern delete 제작(Song Schema의 patterns도 변경해야함)
      */
+
+    async deletePattern(id) {
+        const pattern = await this.patternModel.findById(id);
+
+        // updateOne은 일치하는 문서가 없을 때에는 아무것도 하지 않으며, 일치하는 문서가 있을 때에만 업데이트함
+        await this.songModel.updateOne(
+            { _id: pattern.song },
+            { $pull: {patterns: pattern._id}} 
+        );
+
+        await this.patternModel.findByIdAndDelete(id);
+    }
 }

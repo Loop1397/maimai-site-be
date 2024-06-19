@@ -9,16 +9,21 @@ export class PatternController {
 
     @Post()
     async createPattern(@Body() body) {
-        return this.patternService.createPattern(body);
+        return await this.patternService.createPattern(body);
     }
 
+    /**
+     * TODO
+     * [ ] : 제대로 된 데이터가 들어왔는지 확인해야함
+     */
     @Patch(':id')
-    async updatePattern(@Body() body) {
-
+    async updatePattern(@Param('id') id, @Body() body) {
+        console.log(body)
+        return await this.patternService.updatePattern(id, body);
     }
 
     @Delete(':id')
     async deletePattern(@Param('id') id) {
-        return this.patternService.deletePattern(id);
+        return await this.patternService.deletePattern(id);
     }
 }

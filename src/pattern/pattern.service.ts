@@ -47,10 +47,23 @@ export class PatternService {
         return savedPattern;
     }
 
-    /**
-     * TODO
-     * [ ]: pattern delete 제작(Song Schema의 patterns도 변경해야함)
-     */
+    async updatePattern(id, body) {
+        const updateFields = body;
+
+        const updatedPattern = this.patternModel.findByIdAndUpdate(
+            {_id: id},
+            { $set: updateFields},
+            // new: true 옵션을 사용하면 업데이트된 문서를 반환받음
+            // 만약 new: false라면 업데이트 되기 전의 문서를 반환받음
+            { new:true, useFindAndModify: false}
+        );
+
+        if(!updatedPattern) {
+            throw new NotFoundException('업데이트된 pattern을 찾을 수 없습니다!')
+        }
+
+        return updatedPattern;
+    }
 
     async deletePattern(id) {
         const pattern = await this.patternModel.findById(id);

@@ -3,6 +3,7 @@ import { Model, Types } from 'mongoose';
 import { Pattern } from './schemas/pattern.schema';
 import { InjectModel } from '@nestjs/mongoose';
 import { Song } from 'src/song/schemas/song.schema';
+import { UpdatePatternDto } from './dto/update-pattern.dto';
 
 @Injectable()
 export class PatternService {
@@ -12,6 +13,12 @@ export class PatternService {
         @InjectModel(Song.name)
         private songModel: Model<Song>,
     ) {}
+
+    /**
+     * TODO
+     * [ ] : getAllPatterns와 getPatternById 제작
+     * [ ] : song외래키를 통해 song의 정보까지 가져오는 메소드 제작
+     */
 
     async createPattern(body) {
         const { songId, difficulty, level, constant, patterner, type, version } = body;
@@ -47,8 +54,8 @@ export class PatternService {
         return savedPattern;
     }
 
-    async updatePattern(id, body) {
-        const updateFields = body;
+    async updatePattern(id, updatePatternDto: UpdatePatternDto) {
+        const updateFields = updatePatternDto;
 
         const updatedPattern = this.patternModel.findByIdAndUpdate(
             {_id: id},

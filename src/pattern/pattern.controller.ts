@@ -1,5 +1,6 @@
 import { Body, Controller, Delete, Param, Patch, Post } from '@nestjs/common';
 import { PatternService } from './pattern.service';
+import { UpdatePatternDto } from './dto/update-pattern.dto';
 
 @Controller('pattern')
 export class PatternController {
@@ -7,19 +8,23 @@ export class PatternController {
         private readonly patternService: PatternService
     ) {}
 
+    
+    /**
+     * TODO
+     * [ ] : createPatternDto 제작
+     * [ ] : getPatternById 제작
+     * [ ] : getAllPatterns 제작
+     */
+
     @Post()
     async createPattern(@Body() body) {
         return await this.patternService.createPattern(body);
     }
 
-    /**
-     * TODO
-     * [ ] : 제대로 된 데이터가 들어왔는지 확인해야함
-     */
     @Patch(':id')
-    async updatePattern(@Param('id') id, @Body() body) {
-        console.log(body)
-        return await this.patternService.updatePattern(id, body);
+    async updatePattern(@Param('id') id, @Body() updatePatternDto: UpdatePatternDto) {
+        console.log(updatePatternDto)
+        return await this.patternService.updatePattern(id, updatePatternDto);
     }
 
     @Delete(':id')

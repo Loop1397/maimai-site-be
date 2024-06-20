@@ -4,6 +4,7 @@ import { Pattern } from './schemas/pattern.schema';
 import { InjectModel } from '@nestjs/mongoose';
 import { Song } from 'src/song/schemas/song.schema';
 import { UpdatePatternDto } from './dto/update-pattern.dto';
+import { CreatePatternDto } from './dto/create-pattern.dto';
 
 @Injectable()
 export class PatternService {
@@ -20,14 +21,15 @@ export class PatternService {
      * [ ] : song외래키를 통해 song의 정보까지 가져오는 메소드 제작
      */
 
-    async createPattern(body) {
-        const { songId, difficulty, level, constant, patterner, type, version } = body;
+    async createPattern(createPatternDto: CreatePatternDto) {
+        const { difficulty, level, constant, patterner, type, version, songId }: {difficulty: string, level: string, constant?: number, patterner?: string, type: string, version: string, songId: Types.ObjectId} = createPatternDto;
         const song = await this.songModel.findById(songId);
 
         if(!song) {
             throw new NotFoundException('해당 id에 맞는 노래가 존재하지 않습니다!')
         }
 
+        console.log(createPatternDto);
         const newPattern = new this.patternModel({
             difficulty,
             level,
@@ -35,7 +37,7 @@ export class PatternService {
             patterner,
             type,
             version,
-            song: song._id,
+            songId
         }); 
 
         const savedPattern = await newPattern.save();
@@ -54,11 +56,11 @@ export class PatternService {
         return savedPattern;
     }
 
-    async updatePattern(id, updatePatternDto: UpdatePatternDto) {
+    async updatePattern(patternId, updatePatternDto: UpdatePatternDto) {
         const updateFields = updatePatternDto;
 
         const updatedPattern = this.patternModel.findByIdAndUpdate(
-            {_id: id},
+            {_id: patternId},
             { $set: updateFields},
             // new: true 옵션을 사용하면 업데이트된 문서를 반환받음
             // 만약 new: false라면 업데이트 되기 전의 문서를 반환받음
@@ -72,15 +74,15 @@ export class PatternService {
         return updatedPattern;
     }
 
-    async deletePattern(id) {
-        const pattern = await this.patternModel.findById(id);
+    async deletePattern(patternId: Types.ObjectId) {
+        const pattern = await this.patternModel.findById(patternId);
 
         // updateOne은 일치하는 문서가 없을 때에는 아무것도 하지 않으며, 일치하는 문서가 있을 때에만 업데이트함
         await this.songModel.updateOne(
-            { _id: pattern.song },
+            { _id: pattern.songId },
             { $pull: {patterns: pattern._id}} 
         );
 
-        await this.patternModel.findByIdAndDelete(id);
+        await this.patternModel.findByIdAndDelete(patternId);
     }
 }

@@ -2,20 +2,15 @@ import { IsIn, IsNotEmpty, IsNumber, IsOptional, IsString } from "class-validato
 import { Types } from "mongoose";
 import { Constants } from "../pattern-constants";
 
-export class UpdatePatternDto {
-    // IsOptional : 주어진 값이 empty(=== null, === undefined)하다면 validator에서 해당 속성을 무시함
-    @IsOptional()
+export class CreatePatternDto {
     @IsString()
-    // IsOptional은 속성값이 ''로 주어졌을 때를 대처하지 못하기 때문에 IsNotEmpty도 같이 사용해줌
     @IsNotEmpty()
-    // 해당 값이 괄호 안의 배열에 들어있는지 판별
     @IsIn(Constants.PATTERN_DIFFICULTIES)
-    difficulty?: string;
+    difficulty: string;
     
-    @IsOptional()
     @IsString()
     @IsNotEmpty()
-    level?: string;
+    level: string;
 
     @IsOptional()
     @IsNumber()
@@ -27,18 +22,15 @@ export class UpdatePatternDto {
     @IsNotEmpty()
     patterner?: string;
     
-    @IsOptional()
     @IsString()
     @IsNotEmpty()
     @IsIn(Constants.PATTERN_TYPES)
-    type?: string;
+    type: string;
     
-    @IsOptional()
     @IsString()
     @IsNotEmpty()
-    version?: string;
+    version: string;
 
-    @IsOptional()
     @IsNotEmpty()
-    songId?: Types.ObjectId;
+    songId: Types.ObjectId;
 }

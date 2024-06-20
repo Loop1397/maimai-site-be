@@ -1,8 +1,6 @@
 import { IsIn, IsNotEmpty, IsNumber, IsOptional, IsString } from "class-validator";
 import { Types } from "mongoose";
-
-const difficulties = ['basic', 'advanced', 'expert', 'master', 're:master']
-const types = ['standard', 'deluxe'];
+import { Constants } from "../pattern-constants";
 
 export class UpdatePatternDto {
     // IsOptional : 주어진 값이 empty(=== null, === undefined)하다면 validator에서 해당 속성을 무시함
@@ -11,7 +9,7 @@ export class UpdatePatternDto {
     // IsOptional은 속성값이 ''로 주어졌을 때를 대처하지 못하기 때문에 IsNotEmpty도 같이 사용해줌
     @IsNotEmpty()
     // 해당 값이 괄호 안의 배열에 들어있는지 판별
-    @IsIn(difficulties)
+    @IsIn(Constants.PATTERN_DIFFICULTIES)
     difficulty?: string;
     
     @IsOptional()
@@ -32,7 +30,7 @@ export class UpdatePatternDto {
     @IsOptional()
     @IsString()
     @IsNotEmpty()
-    @IsIn(types)
+    @IsIn(Constants.PATTERN_TYPES)
     type?: string;
     
     @IsOptional()

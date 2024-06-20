@@ -2,6 +2,7 @@ import { Prop, Schema, SchemaFactory, SchemaOptions } from "@nestjs/mongoose";
 import { IsNotEmpty, IsNumber, IsString } from "class-validator";
 import { Song } from "src/song/schemas/song.schema";
 import mongoose, { Document, Types  } from "mongoose";
+import { Constants } from "../pattern-constants";
 
 const options: SchemaOptions = {
     collection: 'pattern',
@@ -11,37 +12,40 @@ const options: SchemaOptions = {
 @Schema(options)
 export class Pattern extends Document {
     @Prop({
+        enum: Constants.PATTERN_DIFFICULTIES,
         required: true,
     })
-    @IsString()
     @IsNotEmpty()
     difficulty: string;
     
     @Prop({
+        type: String,
         required: true,
     })
-    @IsString()
     @IsNotEmpty()
     level: string;
 
-    @Prop()
+    @Prop({
+        type: Number,
+    })
     @IsNumber()
     @IsNotEmpty()
     constant: number;
 
-    @Prop()
-    @IsString()
+    @Prop({
+        type: String,
+    })
     patterner: string;
 
     @Prop({
-        enum: ['deluxe', 'standard']
+        enum: Constants.PATTERN_TYPES
     })
     type: string;
     
     @Prop({
+        type: String,
         required: true,
     })
-    @IsString()
     @IsNotEmpty()
     version: string;
 

@@ -18,7 +18,7 @@ export class PatternService {
     /**
      * TODO
      * [x] : getAllPatterns와 getPatternById 제작
-     * [ ] : song외래키를 통해 song의 정보까지 가져오는 메소드 제작
+     * [x] : song외래키를 통해 song의 정보까지 가져도록 작성
      */
 
     async getAllPatterns() {
@@ -33,16 +33,15 @@ export class PatternService {
             throw new NotFoundException('해당 Id에 맞는 패턴이 발견되지 않았습니다!');
         }
 
-        const song = await this.songModel
-            .findById(pattern.song)
-            .populate('song')
-            .exec();
-
-        console.log(song);
-
-        // const song = await this.songModel.findById(pattern.songId)
-
-        // console.log("#########################\nsong: ", song);
+        // populate: 참조중인 외부 도큐먼트를 가져오는 메소드
+        await pattern.populate({
+            // path: 외부 도큐먼트를 가져올(populate) 필드를 지정하는 옵션
+            path:'song',
+            // select: 도큐먼트를 가져올 때 특정 필드만 가져올 수 있게하는 옵션
+            // 가져오거나 가져오지 않을 필드는 띄어쓰기로 구분하며, '가져올 필드만 기입'하거나 '가져오지 않은 필드만 기입'해야함(마이너스를 쓸거면 모든 필드에 마이너스를 붙여야함)
+            // 만약 '가져올 필드만 기입'하는 경우, _id도 자동으로 딸려옴
+            select:'-_id -createdAt -updatedAt -__v'
+        });
 
         return pattern;
     }

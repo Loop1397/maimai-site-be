@@ -40,5 +40,5 @@ export class UpdatePatternDto {
 
     @IsOptional()
     @IsNotEmpty()
-    songId?: Types.ObjectId;
+    song?: Types.ObjectId;
 }

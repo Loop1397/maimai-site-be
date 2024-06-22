@@ -33,14 +33,25 @@ export class PatternService {
             throw new NotFoundException('해당 Id에 맞는 패턴이 발견되지 않았습니다!');
         }
 
+        const song = await this.songModel
+            .findById(pattern.song)
+            .populate('song')
+            .exec();
+
+        console.log(song);
+
+        // const song = await this.songModel.findById(pattern.songId)
+
+        // console.log("#########################\nsong: ", song);
+
         return pattern;
     }
 
     async createPattern(createPatternDto: CreatePatternDto) {
-        const { difficulty, level, constant, patterner, type, version, songId }: {difficulty: string, level: string, constant?: number, patterner?: string, type: string, version: string, songId: Types.ObjectId} = createPatternDto;
-        const song = await this.songModel.findById(songId);
+        const { difficulty, level, constant, patterner, type, version, song }: {difficulty: string, level: string, constant?: number, patterner?: string, type: string, version: string, song: Types.ObjectId} = createPatternDto;
+        const foundedSong = await this.songModel.findById(song);
 
-        if(!song) {
+        if(!foundedSong) {
             throw new NotFoundException('해당 id에 맞는 노래가 존재하지 않습니다!')
         }
 
@@ -52,7 +63,7 @@ export class PatternService {
             patterner,
             type,
             version,
-            songId
+            song
         }); 
 
         const savedPattern = await newPattern.save();
@@ -64,9 +75,9 @@ export class PatternService {
         // 명확한 타입 캐스팅
         const patternId: Types.ObjectId = savedPattern._id as Types.ObjectId;
 
-        song.patterns.push(patternId);
+        foundedSong.patterns.push(patternId);
 
-        song.save();
+        foundedSong.save();
 
         return savedPattern;
     }
@@ -94,7 +105,7 @@ export class PatternService {
 
         // updateOne은 일치하는 문서가 없을 때에는 아무것도 하지 않으며, 일치하는 문서가 있을 때에만 업데이트함
         await this.songModel.updateOne(
-            { _id: pattern.songId },
+            { _id: pattern.song },
             { $pull: {patterns: pattern._id}} 
         );
 

@@ -49,7 +49,7 @@ export class Pattern extends Document {
         type: Types.ObjectId,
         ref: 'Song',
     })
-    songId: Types.ObjectId;
+    song: Types.ObjectId;
 }
 
 export const patternSchema = SchemaFactory.createForClass(Pattern);

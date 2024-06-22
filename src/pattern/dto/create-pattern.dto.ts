@@ -32,5 +32,5 @@ export class CreatePatternDto {
     version: string;
 
     @IsNotEmpty()
-    songId: Types.ObjectId;
+    song: Types.ObjectId;
 }

@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import { Model, Types } from 'mongoose';
 import { Pattern } from './schemas/pattern.schema';
 import { InjectModel } from '@nestjs/mongoose';
@@ -26,15 +26,15 @@ export class PatternService {
     }
 
     async getPatternById(patternId: Types.ObjectId) {
-        const pattern = await this.patternModel.findById(patternId);
+        const foundedPattern = await this.patternModel.findById(patternId);
 
         // 해당 patternId에 맞는 패턴이 발견되지 않을 시
-        if(!pattern) {
+        if(!foundedPattern) {
             throw new NotFoundException('해당 Id에 맞는 패턴이 발견되지 않았습니다!');
         }
 
         // populate: 참조중인 외부 도큐먼트를 가져오는 메소드
-        await pattern.populate({
+        await foundedPattern.populate({
             // path: 외부 도큐먼트를 가져올(populate) 필드를 지정하는 옵션
             path:'song',
             // select: 도큐먼트를 가져올 때 특정 필드만 가져올 수 있게하는 옵션
@@ -43,18 +43,24 @@ export class PatternService {
             select:'-_id -createdAt -updatedAt -__v'
         });
 
-        return pattern;
+        return foundedPattern;
     }
 
     async createPattern(createPatternDto: CreatePatternDto) {
         const { difficulty, level, constant, patterner, type, version, song }: {difficulty: string, level: string, constant?: number, patterner?: string, type: string, version: string, song: Types.ObjectId} = createPatternDto;
+        
         const foundedSong = await this.songModel.findById(song);
 
         if(!foundedSong) {
             throw new NotFoundException('해당 id에 맞는 노래가 존재하지 않습니다!')
         }
 
-        console.log(createPatternDto);
+        const isDuplicated = await this.patternModel.findOne({difficulty, type, song});
+
+        if(isDuplicated) {
+            throw new ConflictException('이미 요청한 노래의 해당 난이도&타입에 대한 데이터가 존재합니다')
+        }
+
         const newPattern = new this.patternModel({
             difficulty,
             level,

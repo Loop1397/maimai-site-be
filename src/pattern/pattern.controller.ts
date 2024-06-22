@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Param, Patch, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common';
 import { PatternService } from './pattern.service';
 import { UpdatePatternDto } from './dto/update-pattern.dto';
 import { CreatePatternDto } from './dto/create-pattern.dto';
@@ -13,10 +13,20 @@ export class PatternController {
     
     /**
      * TODO
-     * [ ] : createPatternDto 제작
-     * [ ] : getPatternById 제작
-     * [ ] : getAllPatterns 제작
+     * [x] : createPatternDto 제작
+     * [x] : getPatternById 제작
+     * [x] : getAllPatterns 제작
      */
+
+    @Get()
+    async getAllPatterns() {
+        return await this.patternService.getAllPatterns();
+    }
+
+    @Get(':patternId')
+    async getPatternById(@Param('patternId') patternId: Types.ObjectId) {
+        return await this.patternService.getPatternById(patternId);
+    }
 
     @Post()
     async createPattern( @Body() createPatternDto: CreatePatternDto) {

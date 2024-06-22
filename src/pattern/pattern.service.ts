@@ -17,9 +17,24 @@ export class PatternService {
 
     /**
      * TODO
-     * [ ] : getAllPatterns와 getPatternById 제작
+     * [x] : getAllPatterns와 getPatternById 제작
      * [ ] : song외래키를 통해 song의 정보까지 가져오는 메소드 제작
      */
+
+    async getAllPatterns() {
+        return this.patternModel.find({});
+    }
+
+    async getPatternById(patternId: Types.ObjectId) {
+        const pattern = await this.patternModel.findById(patternId);
+
+        // 해당 patternId에 맞는 패턴이 발견되지 않을 시
+        if(!pattern) {
+            throw new NotFoundException('해당 Id에 맞는 패턴이 발견되지 않았습니다!');
+        }
+
+        return pattern;
+    }
 
     async createPattern(createPatternDto: CreatePatternDto) {
         const { difficulty, level, constant, patterner, type, version, songId }: {difficulty: string, level: string, constant?: number, patterner?: string, type: string, version: string, songId: Types.ObjectId} = createPatternDto;

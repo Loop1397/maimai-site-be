@@ -3,7 +3,6 @@
 import { Prop, Schema, SchemaFactory, SchemaOptions } from "@nestjs/mongoose";
 import { IsNotEmpty, IsNumber, IsString } from "class-validator";
 import mongoose, { Document, Types  } from "mongoose";
-import { Pattern } from "src/pattern/schemas/pattern.schema";
 
 // 스키마 옵션
 const options: SchemaOptions = {
@@ -20,37 +19,33 @@ export class Song extends Document {
     @Prop({
         required: true,
         unique: true,
+        type: String,
     })
-    @IsString()
-    @IsNotEmpty()
-    songName: string;
+    title: string;
 
     @Prop({
         required: true,
+        type: String,
     })
-    @IsString()
-    @IsNotEmpty()
     artist: string;
     
     @Prop({
         required: true,
+        type: Number,
     })
-    @IsNumber()
-    @IsNotEmpty()
     bpm: number;
 
     @Prop({
         required: true,
+        type: String,
     })
-    @IsString()
-    @IsNotEmpty()
     genre: string;
 
     @Prop({
         type: [{
             type: Types.ObjectId,
             ref: 'Pattern',
-        }]
+        }],
     })
     patterns: Types.ObjectId[];
 }

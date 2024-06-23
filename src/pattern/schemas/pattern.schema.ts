@@ -46,10 +46,14 @@ export class Pattern extends Document {
 
     @Prop({
         required: true,
-        type: Types.ObjectId,
-        ref: 'Song',
+        type: Object
     })
-    song: Types.ObjectId;
+    song: {
+        title: string,
+        artist: string,
+        bpm: number,
+        genre: string
+    };
 }
 
 export const patternSchema = SchemaFactory.createForClass(Pattern);

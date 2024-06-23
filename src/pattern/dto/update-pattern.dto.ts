@@ -1,4 +1,4 @@
-import { IsIn, IsNotEmpty, IsNumber, IsOptional, IsString } from "class-validator";
+import { IsIn, IsMongoId, IsNotEmpty, IsNumber, IsOptional, IsString } from "class-validator";
 import { Types } from "mongoose";
 import { Constants } from "../pattern-constants";
 
@@ -40,5 +40,6 @@ export class UpdatePatternDto {
 
     @IsOptional()
     @IsNotEmpty()
+    @IsMongoId()
     song?: Types.ObjectId;
 }

@@ -83,7 +83,7 @@ export class PatternService {
         const patternId: Types.ObjectId = savedPattern._id as Types.ObjectId;
 
         await this.songModel.findOneAndUpdate(
-            {title: songData.title},
+            {_id: song},
             { $push: {patterns: patternId}},
             { useFindAndModify: false}
         )
@@ -109,8 +109,22 @@ export class PatternService {
         });
         
         // 만약 업데이트 되는 항목 중 song이 존재한다면 해당 song(ObjectId)를 바탕으로 songData를 가져온 뒤 updateFields.song에 넣어줌
+        // 또한 기존의 song 및 새로 입력되는 song의 patterns를 업데이트함
         if(updateFields.song) {
             updateFields.song = await this.getSongData(updatePatternDto.song);
+
+            // 기존 song의 patterns에 들어가있던 patternId 삭제
+            await this.songModel.updateOne(
+                { title : existingPattern.song.title },
+                // 왠진 모르겠는데 patternId로 찾으면 안됐음. 일반 string으로 바뀐 느낌?
+                { $pull : {patterns: existingPattern._id }},
+            )
+
+            // pattern이 새로 들어가는 song의 patterns 갱신
+            await this.songModel.updateOne(
+                { title : updateFields.song.title },
+                { $push: {patterns: existingPattern._id}}, 
+            );
         }
 
         const updatedPattern = await this.patternModel.findByIdAndUpdate(

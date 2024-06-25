@@ -82,8 +82,8 @@ export class PatternService {
         // 명확한 타입 캐스팅
         const patternId: Types.ObjectId = savedPattern._id as Types.ObjectId;
 
-        await this.songModel.findByIdAndUpdate(
-            {_id: patternId},
+        await this.songModel.findOneAndUpdate(
+            {title: songData.title},
             { $push: {patterns: patternId}},
             { useFindAndModify: false}
         )

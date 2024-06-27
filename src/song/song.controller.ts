@@ -1,5 +1,6 @@
-import { Body, Controller, Delete, Get, Patch, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common';
 import { SongService } from './song.service';
+import { Types } from 'mongoose';
 
 @Controller('song')
 export class SongController {
@@ -7,9 +8,22 @@ export class SongController {
         private readonly songService: SongService
     ) {}
 
+    /**
+     * TODO
+     * [ ] : createSongDto 제작
+     * [ ] : updateSongDto 제작
+     * [x] : getSongById 제작
+     * [x] : getAllSongs 제작
+     */
+
     @Get()
-    getAllSongs(): string {
-        return 'This will action returns all songs';
+    getAllSongs() {
+        return this.songService.getAllSongs();
+    }
+
+    @Get(':songId')
+    async getSongById(@Param('songId') songId: Types.ObjectId) {
+        return await this.songService.getSongById(songId);
     }
 
     @Post()

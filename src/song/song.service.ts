@@ -10,6 +10,32 @@ export class SongService {
         private songModel: Model<Song>
     ) {}
 
+    async getAllSongs() {
+        const allSongs = await this.songModel.aggregate([
+            { 
+                $lookup: {
+                  from: 'pattern',
+                  localField: 'patterns',
+                  foreignField: '_id',
+                  as: 'patternDetails'
+                }
+            },
+            {
+                $project: {
+                    patternDetails: {
+                        _id:0,
+                        song:0,
+                        createdAt:0,
+                        updatedAt:0,
+                        __v:0
+                    }
+                }
+            }
+        ]).exec();
+
+        return allSongs;
+    }
+
     /**
      * TODO
      * [x] : getSongById에서 populate가 제대로 적용되지 않는 문제 해결 - populate대신 aggregate로 일단 해결함

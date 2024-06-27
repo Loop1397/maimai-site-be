@@ -39,7 +39,7 @@ export class Pattern extends Document {
     type: string;
     
     @Prop({
-        type: String,
+        enum: Constants.PATTERN_VERSIONS,
         required: true,
     })
     version: string;

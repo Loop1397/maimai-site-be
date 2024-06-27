@@ -1,13 +1,13 @@
 import { IsIn, IsMongoId, IsNotEmpty, IsNumber, IsOptional, IsString, Min } from "class-validator";
 import { Types } from "mongoose";
-import { Constants } from "../pattern-constants";
+import { PatternConstants } from "../pattern-constants";
 
 export class UpdatePatternDto {
     // IsOptional : 주어진 값이 empty(=== null, === undefined)하다면 validator에서 해당 속성을 무시함
     // +) IsOptional은 속성값이 ''로 주어졌을 때를 대처하지 못함
     @IsOptional()
     // 해당 값이 괄호 안의 배열에 들어있는지 판별
-    @IsIn(Constants.PATTERN_DIFFICULTIES)
+    @IsIn(PatternConstants.PATTERN_DIFFICULTIES)
     difficulty?: string;
 
     @IsOptional()
@@ -27,11 +27,11 @@ export class UpdatePatternDto {
     patterner?: string;
     
     @IsOptional()
-    @IsIn(Constants.PATTERN_TYPES)
+    @IsIn(PatternConstants.PATTERN_TYPES)
     type?: string;
     
     @IsOptional()
-    @IsIn(Constants.PATTERN_VERSIONS)
+    @IsIn(PatternConstants.PATTERN_VERSIONS)
     version?: string;
 
     @IsOptional()

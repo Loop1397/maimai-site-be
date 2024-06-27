@@ -1,7 +1,7 @@
 import { Prop, Schema, SchemaFactory, SchemaOptions } from "@nestjs/mongoose";
 import { Song } from "src/song/schemas/song.schema";
 import mongoose, { Document, Types  } from "mongoose";
-import { Constants } from "../pattern-constants";
+import { PatternConstants } from "../pattern-constants";
 
 const options: SchemaOptions = {
     collection: 'pattern',
@@ -11,7 +11,7 @@ const options: SchemaOptions = {
 @Schema(options)
 export class Pattern extends Document {
     @Prop({
-        enum: Constants.PATTERN_DIFFICULTIES,
+        enum: PatternConstants.PATTERN_DIFFICULTIES,
         required: true,
     })
     difficulty: string;
@@ -33,13 +33,13 @@ export class Pattern extends Document {
     patterner: string;
 
     @Prop({
-        enum: Constants.PATTERN_TYPES,
+        enum: PatternConstants.PATTERN_TYPES,
         required: true,
     })
     type: string;
     
     @Prop({
-        enum: Constants.PATTERN_VERSIONS,
+        enum: PatternConstants.PATTERN_VERSIONS,
         required: true,
     })
     version: string;

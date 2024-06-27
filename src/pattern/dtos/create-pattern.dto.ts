@@ -1,9 +1,9 @@
 import { IsIn, IsMongoId, IsNotEmpty, IsNumber, IsOptional, IsString, Min} from "class-validator";
 import { Types } from "mongoose";
-import { Constants } from "../pattern-constants";
+import { PatternConstants } from "../pattern-constants";
 
 export class CreatePatternDto {
-    @IsIn(Constants.PATTERN_DIFFICULTIES)
+    @IsIn(PatternConstants.PATTERN_DIFFICULTIES)
     difficulty: string;
     
     @IsString()
@@ -22,10 +22,10 @@ export class CreatePatternDto {
     @IsNotEmpty()
     patterner?: string;
     
-    @IsIn(Constants.PATTERN_TYPES)
+    @IsIn(PatternConstants.PATTERN_TYPES)
     type: string;
     
-    @IsIn(Constants.PATTERN_VERSIONS)
+    @IsIn(PatternConstants.PATTERN_VERSIONS)
     version: string;
 
     // mongoDB에서 사용하는 ObjectId인지 판별하는 데코레이터

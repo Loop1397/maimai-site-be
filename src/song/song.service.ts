@@ -2,6 +2,8 @@ import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/co
 import { InjectModel } from '@nestjs/mongoose';
 import { Song } from './schemas/song.schema';
 import { Model, Types } from 'mongoose';
+import { CreateSongDto } from './dtos/create-song.dto';
+import { UpdateSongDto } from './dtos/update-song.dto';
 
 @Injectable()
 export class SongService {
@@ -78,25 +80,25 @@ export class SongService {
         return song[0];
     }
 
-    async createSong(body: any) {
-        const { title, artist, bpm, genre} = body;
-        console.log(body);
-
-        // 동일한 노래 이름과 난이도를 가진 도큐먼트가 있는지 확인
+    async createSong(createSongDto: CreateSongDto) {
+        // 노래 제목이 unique한 값이라 제목만 검사하면 됨
         // https://progdev.tistory.com/29
-        const isSongExist = await this.songModel.findOne({title});
+        const isSongExist = await this.songModel.findOne({title: createSongDto.title});
 
         if(isSongExist) {
             throw new UnauthorizedException('이미 DB에 존재하는 노래입니다!');
         }
 
-        const song = await this.songModel.create({
-            title,
-            artist,
-            bpm,
-            genre,
-        });
+        const song = await this.songModel.create(createSongDto);
 
         return song;
+    }
+
+    async updateSong(updateSongDto: UpdateSongDto) {
+
+    }
+
+    async deleteSong(songId: Types.ObjectId) {
+        
     }
 }

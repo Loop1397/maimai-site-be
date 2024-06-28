@@ -1,7 +1,7 @@
 import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common';
 import { PatternService } from './pattern.service';
-import { UpdatePatternDto } from './dto/update-pattern.dto';
-import { CreatePatternDto } from './dto/create-pattern.dto';
+import { UpdatePatternDto } from './dtos/update-pattern.dto';
+import { CreatePatternDto } from './dtos/create-pattern.dto';
 import { Types } from 'mongoose';
 
 @Controller('pattern')

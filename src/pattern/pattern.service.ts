@@ -3,8 +3,8 @@ import { Model, Types } from 'mongoose';
 import { Pattern } from './schemas/pattern.schema';
 import { InjectModel } from '@nestjs/mongoose';
 import { Song } from 'src/song/schemas/song.schema';
-import { UpdatePatternDto } from './dto/update-pattern.dto';
-import { CreatePatternDto } from './dto/create-pattern.dto';
+import { UpdatePatternDto } from './dtos/update-pattern.dto';
+import { CreatePatternDto } from './dtos/create-pattern.dto';
 
 @Injectable()
 export class PatternService {
@@ -107,6 +107,7 @@ export class PatternService {
                 updateFields[key] = updatePatternDto[key];
             }
         });
+            
         
         // 만약 업데이트 되는 항목 중 song이 존재한다면 해당 song(ObjectId)를 바탕으로 songData를 가져온 뒤 updateFields.song에 넣어줌
         // 또한 기존의 song 및 새로 입력되는 song의 patterns를 업데이트함

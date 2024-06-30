@@ -1,15 +1,18 @@
-import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import { ConflictException, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Song } from './schemas/song.schema';
 import { Model, Types } from 'mongoose';
 import { CreateSongDto } from './dtos/create-song.dto';
 import { UpdateSongDto } from './dtos/update-song.dto';
+import { Pattern } from 'src/pattern/schemas/pattern.schema';
 
 @Injectable()
 export class SongService {
     constructor(
         @InjectModel(Song.name)
-        private songModel: Model<Song>
+        private songModel: Model<Song>,
+        @InjectModel(Pattern.name)
+        private patternModel: Model<Pattern>
     ) {}
 
     async getAllSongs() {
@@ -94,11 +97,48 @@ export class SongService {
         return song;
     }
 
-    async updateSong(updateSongDto: UpdateSongDto) {
+    async updateSong(songId: Types.ObjectId, updateSongDto: UpdateSongDto) {
+        const { title, artist, bpm, genre }: {title?: string, artist?: string, bpm?: number, genre?: string} = updateSongDto;
 
+        const song = await this.songModel.findById(songId);
+
+        if(!song) {
+            throw new NotFoundException('해당 Id에 맞는 노래가 발견되지 않았습니다!')
+        }
+
+        if(title) {
+            const isDuplicated = await this.songModel.findOne({title});
+
+            if(isDuplicated) {
+                throw new ConflictException('변경하려는 노래 이름을 가진 데이터가 이미 존재합니다!');
+            }
+        }
+
+        const updatedSong = await this.songModel.findOneAndUpdate(
+            { _id: songId },
+            { $set: updateSongDto },
+            { new:true, useFindAndModify: false }
+        );
+
+        // 바뀐 노래 정보를 pattern에서도 갱신하기 위해 필요한 정보만 담은 객체 생성
+        const songData = {
+            title: updatedSong.title,
+            artist: updatedSong.artist,
+            bpm: updatedSong.bpm,
+            genre: updatedSong.genre
+        }
+        
+        updatedSong.patterns.forEach(async (id) => {
+            await this.patternModel.findOneAndUpdate(
+                {_id: id},
+                {song: songData}
+            );
+        });
+
+        return updatedSong;
     }
 
     async deleteSong(songId: Types.ObjectId) {
-        
+        return await this.songModel.findByIdAndDelete(songId);
     }
 }

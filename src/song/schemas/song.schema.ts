@@ -3,6 +3,7 @@
 import { Prop, Schema, SchemaFactory, SchemaOptions } from "@nestjs/mongoose";
 import { IsNotEmpty, IsNumber, IsString } from "class-validator";
 import mongoose, { Document, Types  } from "mongoose";
+import { SongConstants } from "../song-constants";
 
 // 스키마 옵션
 const options: SchemaOptions = {
@@ -37,7 +38,7 @@ export class Song extends Document {
 
     @Prop({
         required: true,
-        type: String,
+        enum: SongConstants.SONG_GENRE
     })
     genre: string;
 

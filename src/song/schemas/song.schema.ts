@@ -31,7 +31,6 @@ export class Song extends Document {
     artist: string;
     
     @Prop({
-        required: true,
         type: Number,
     })
     bpm: number;

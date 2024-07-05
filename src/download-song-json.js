@@ -5,7 +5,23 @@ const path = require('path');
 const downloadJsonFile = async (url, filePath) => {
     try {
         const response = await axios.get(url, { responseType: 'json' });
-        fs.writeFileSync(filePath, JSON.stringify(response.data, null, 2));
+
+        // version 코드에 따라 정렬
+        response.data.sort((a, b) => {
+            if( a.version < b.version ) return -1;
+            if( a.version > b.version ) return 1;
+            return 0;
+        });
+
+        // catcode(장르)가 宴会場인 데이터 필터링
+        const jsonData = response.data.filter(data => data.catcode !== `宴会場`);
+
+        // 일본어 자판 ＆(아마 전각문자)를 영어 자판의 &로 바꿈
+        jsonData.forEach(element => {
+            element.catcode = element.catcode.replace(`＆`, `&`);
+        });
+
+        fs.writeFileSync(filePath, JSON.stringify(jsonData, null, 2));
         console.log(`download success!!!!!!`);
         /** 
          * TODO

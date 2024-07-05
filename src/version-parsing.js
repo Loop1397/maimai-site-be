@@ -1,9 +1,6 @@
 const fs = require('fs');
 const axios = require('axios');
 
-const jsonFile = fs.readFileSync('../data/maimai_songs.json', 'utf-8');
-const jsonData = JSON.parse(jsonFile);
-const versionList = [];
 
 const versionCode = {
     100: 'maimai',
@@ -31,18 +28,22 @@ const versionCode = {
     245: 'BUDDiES+',
 }
 
-jsonData.forEach(data => {
-    console.log(versionCode[parseInt(data.version/100)])
-})
 
-// versionList.sort((a,b) => {
-//     if( a < b ) return -1;
-//     if( a > b ) return 1;
-//     return 0;
-// });
+const parsingSongData = () => {
+    const jsonFile = fs.readFileSync('../data/maimai_songs.json', 'utf-8');
+    const jsonData = JSON.parse(jsonFile);
+    const songData = [];
 
-// console.log(`##############versionList : ${versionList}`);
+    jsonData.forEach(data => {
+        const newSong = {};
+        newSong.title = data.title;
+        newSong.artist = data.artist;
+        newSong.genre = data.catcode;
 
-// let number = '10010';
-// console.log(parseInt(number/100));
-// console.log(versionCode[parseInt(number/100 +1)]);
+        songData.push(newSong);
+    });
+
+    return songData;
+};
+
+console.log(parsingSongData());

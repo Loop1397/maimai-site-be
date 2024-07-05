@@ -14,7 +14,7 @@ export class UpdateSongDto {
     
     @IsOptional()
     @IsInt()
-    @Min(1)
+    @Min(0)
     bpm?: number;
 
     @IsOptional()

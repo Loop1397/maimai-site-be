@@ -12,7 +12,7 @@ export class CreateSongDto {
     
     @IsOptional()
     @IsInt()
-    @Min(1)
+    @Min(0)
     bpm?: number;
 
     @IsIn(SongConstants.SONG_GENRE)

@@ -32,6 +32,8 @@ export class Song extends Document {
     
     @Prop({
         type: Number,
+        // bpm의 값이 0이라면 현재 bpm이 입력되지 않았다는 뜻
+        default: 0
     })
     bpm: number;
 

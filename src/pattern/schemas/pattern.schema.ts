@@ -24,11 +24,15 @@ export class Pattern extends Document {
 
     @Prop({
         type: Number,
+        // constant의 값이 0이라면 현재 입력되지 않았다는 뜻
+        default: 0
     })
     constant: number;
 
     @Prop({
         type: String,
+        // patterner의 값이 `-`이라면 현재 입력되지 않았다는 뜻
+        default: `-`
     })
     patterner: string;
 

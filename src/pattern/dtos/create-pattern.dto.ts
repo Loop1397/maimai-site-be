@@ -29,6 +29,8 @@ export class CreatePatternDto {
     version: string;
 
     // mongoDB에서 사용하는 ObjectId인지 판별하는 데코레이터
-    @IsMongoId()
-    song: Types.ObjectId;
+    // @IsMongoId()
+    @IsString()
+    @IsNotEmpty()
+    songTitle: string;
 }

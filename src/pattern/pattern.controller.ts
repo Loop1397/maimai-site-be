@@ -30,7 +30,7 @@ export class PatternController {
 
     @Post()
     async createPattern( @Body() createPatternDto: CreatePatternDto) {
-        return await this.patternService.createPattern( createPatternDto);
+        return await this.patternService.createPattern(createPatternDto);
     }
 
     @Patch(':patternId')

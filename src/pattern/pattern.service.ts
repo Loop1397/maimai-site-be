@@ -46,15 +46,15 @@ export class PatternService {
     }
 
     async createPattern(createPatternDto: CreatePatternDto) {
-        const { difficulty, level, constant, patterner, type, version, song }: {difficulty: string, level: string, constant?: number, patterner?: string, type: string, version: string, song: Types.ObjectId} = createPatternDto;
+        const { difficulty, level, constant, patterner, type, version, songTitle }: {difficulty: string, level: string, constant?: number, patterner?: string, type: string, version: string, songTitle: string} = createPatternDto;
         
-        const songData = await this.getSongData(song);
+        const songData = await this.getSongData(songTitle);
 
         const isDuplicated = await this.patternModel.findOne({
             difficulty, 
             type, 
             // 중첩된 객체의 필드를 비교하는 방법
-            'song.title': songData.title
+            'song.title': songTitle
         });
 
         if(isDuplicated) {
@@ -83,7 +83,7 @@ export class PatternService {
         const patternId: Types.ObjectId = savedPattern._id as Types.ObjectId;
 
         await this.songModel.findOneAndUpdate(
-            {_id: song},
+            {title: songTitle},
             { $push: {patterns: patternId}},
             { useFindAndModify: false}
         )
@@ -101,7 +101,7 @@ export class PatternService {
         // 깊은 복사를 위해 객체 생성
         let updateFields: any = {};
 
-        // updatePatternDto의 null이 아닌 필드만을 updateFields로 깊은 복사함 
+        // updatePatternDto에서 value값이 null이 아닌 필드(key, value)만을 updateFields로 깊은 복사함 
         Object.keys(updatePatternDto).forEach(key => {
             if (updatePatternDto[key] !== null && updatePatternDto[key] !== undefined) {
                 updateFields[key] = updatePatternDto[key];
@@ -112,7 +112,7 @@ export class PatternService {
         // 만약 업데이트 되는 항목 중 song이 존재한다면 해당 song(ObjectId)를 바탕으로 songData를 가져온 뒤 updateFields.song에 넣어줌
         // 또한 기존의 song 및 새로 입력되는 song의 patterns를 업데이트함
         if(updateFields.song) {
-            updateFields.song = await this.getSongData(updatePatternDto.song);
+            updateFields.song = await this.getSongData(updatePatternDto.songTitle);
 
             // 기존 song의 patterns에 들어가있던 patternId 삭제
             await this.songModel.updateOne(
@@ -151,9 +151,14 @@ export class PatternService {
         await this.patternModel.findByIdAndDelete(patternId);
     }
 
-    async getSongData(song: Types.ObjectId) {
+    
+    /**
+     * TODO
+     * [x] : 노래 Id가 아니라 이름을 통해 가져오도록 바꾸는게 좋아보임. dto도 다 바꿔야함
+     */
+    async getSongData(songTitle: string) {
         const songData = await this.songModel
-            .findById(song)
+            .findOne({title: songTitle})
             // select: 도큐먼트를 가져올 때 특정 필드만 가져올 수 있게하는 옵션
             // 가져오거나 가져오지 않을 필드는 띄어쓰기로 구분하며, '가져올 필드만 기입'하거나 '가져오지 않은 필드만 기입'해야함(마이너스를 쓸거면 모든 필드에 마이너스를 붙여야함)
             // 만약 '가져올 필드만 기입'하는 경우, _id도 자동으로 딸려옴

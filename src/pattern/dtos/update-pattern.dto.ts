@@ -35,6 +35,7 @@ export class UpdatePatternDto {
     version?: string;
 
     @IsOptional()
-    @IsMongoId()
-    song?: Types.ObjectId;
+    @IsString()
+    @IsNotEmpty()
+    songTitle?: string;
 }

@@ -23,14 +23,21 @@ const jpFriendUrl = `https://maimaidx.jp/maimai-mobile/friend/search/searchUser/
 /**
  * TODO
  * [x]: 국제판 친구코드 검색 기능도 만들기
- * [ ]: getUserProfile에서 가져올 유저 정보 확정 및 완성
+ * [x]: getUserProfile에서 가져올 유저 정보 확정 및 완성
  */
 
 // 친구코드로 검색에 성공했을 때 해당 페이지에서 필요한 정보를 가져오는 메소드
-const getUserProfile = () => {
+// 친구 검색에 성공하면 닉네임이랑 레이팅을 리턴, 아니면 null을 리턴 
+const scrapUserData = () => {
+    if(document.querySelector(`.basic_block`) === null) 
+        return null;
 
+    const name = document.querySelector('.basic_block .name_block').innerText;
+    const rating = document.querySelector('.basic_block .rating_block').innerText;
+    return { name, rating };
 }
 
+// 총 실행시간 약 5초 +- 3
 const searchUser = async (friendCode, jp) => {
 
     // puppeteer를 사용해 headless 브라우저 실행
@@ -88,8 +95,8 @@ const searchUser = async (friendCode, jp) => {
     }
 
     await page.goto(friendUrl + friendCode);
-    const content = await page.content();
-    console.log(content);
+    const response = await page.evaluate(scrapUserData);
+    console.log(response);
 
     // puppeteer로 실행된 브라우저 종료
     await browser.close();

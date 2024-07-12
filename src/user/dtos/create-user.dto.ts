@@ -1,4 +1,4 @@
-import { Length, Matches } from "class-validator";
+import { IsBoolean, Length, Matches } from "class-validator";
 
 export class createUserDto {
     // 정규표현식(0부터 9사이의 숫자만)
@@ -6,4 +6,7 @@ export class createUserDto {
     // 길이 13짜리 스트링으로 제한
     @Length(13)
     friendCode: string;
+
+    @IsBoolean()
+    isJp: boolean;
 }

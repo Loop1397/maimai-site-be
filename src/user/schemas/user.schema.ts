@@ -13,7 +13,7 @@ export class User extends Document {
         unique: true,
         type: String,
     })
-    code: string;
+    friendCode: string;
 
     @Prop({
         required: true,

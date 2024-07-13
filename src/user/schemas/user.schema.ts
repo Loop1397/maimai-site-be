@@ -14,6 +14,12 @@ export class User extends Document {
         type: String,
     })
     friendCode: string;
+    
+    @Prop({
+        required: true,
+        type: Boolean
+    })
+    isJp: boolean;
 
     @Prop({
         required: true,

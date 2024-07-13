@@ -1,8 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { User } from './schemas/user.schema';
-import { createUserDto } from './dtos/create-User.dto';
+import { UserDto } from './dtos/user.dto';
 import { INTL_LOGIN_PAGE, INTL_FRIEND_URL, JP_LOGIN_PAGE, JP_FRIEND_URL } from './constants/url';
 
 const puppeteer = require('puppeteer');
@@ -94,25 +94,82 @@ export class UserService {
         await browser.close();
 
         if(response === null) {
-            throw new NotFoundException(`유저코드가 ${friendCode}인 유저를 찾을 수 없습니다!!`);
+            throw new NotFoundException(`해당 유저를 찾을 수 없습니다!`);
         }
 
         // response는 null로 인해 위에서 걸리는게 아니라면 { name, rating }
         return response;
     }
 
-    async createUser(createUserDto: createUserDto) {
-        const { friendCode, isJp } = createUserDto;
+    async createUser(userDto: UserDto) {
+        const { friendCode, isJp } = userDto;
+
+        const isUserExist = await this.userModel.findOne({friendCode: friendCode});
+
+        if(isUserExist) {
+            throw new UnauthorizedException('이미 DB에 존재하는 유저입니다!');
+        }
         
-        const response = await this.searchUser(friendCode, isJp);
-        const { name, rating } = response; 
+        const { name, rating } = await this.searchUser(friendCode, isJp);
 
         const user = this.userModel.create({
             friendCode,
+            isJp,
             name,
             rating
         });
 
         return user;
+    }
+
+    async getUserByFriendCode(userDto: UserDto) {
+        const foundedUser = await this.userModel.findOne({friendCode: userDto.friendCode});
+
+        if(!foundedUser) {
+            throw new NotFoundException('해당 유저를 찾을 수 없습니다!');
+        }
+
+        return foundedUser;
+    }
+
+    // 유저 갱신 메소드
+    async updateUser(userDto: UserDto) {
+        const { friendCode, isJp } = userDto;
+        
+        const foundedUser = await this.userModel.findOne({friendCode: friendCode});
+        if(!foundedUser) {
+            throw new NotFoundException(`해당 유저를 찾을 수 없습니다!`);
+        }
+        
+        const { name, rating } = await this.searchUser(friendCode, isJp);
+
+        const updateFields = {
+            friendCode,
+            isJp,
+            name,
+            rating
+        };
+
+        // 만약 유저의 현재 레이팅이 탑 레이팅보다 낮다면 updateFields에서 rating을 삭제함 -> 레이팅을 업데이트하지 않음
+        if(foundedUser.rating > updateFields.rating) {
+            delete updateFields.rating;
+        }
+
+        const updatedUser = await this.userModel.findOneAndUpdate(
+            {friendCode: friendCode},
+            { $set: updateFields},
+            // new: true 옵션을 사용하면 업데이트된 문서를 반환받음
+            // 만약 new: false라면 업데이트 되기 전의 문서를 반환받음
+            { new:true, useFindAndModify: false}
+        );
+
+        return updatedUser;
+    }
+
+    async deleteUser(userDto: UserDto) {
+        return this.userModel.findOneAndDelete({
+            friendCode: userDto.friendCode, 
+            isJp: userDto.isJp
+        });
     }
 }

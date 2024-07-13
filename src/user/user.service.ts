@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { User } from './schemas/user.schema';
@@ -89,15 +89,30 @@ export class UserService {
     
         await page.goto(friendUrl + friendCode);
         const response = await page.evaluate(this.scrapUserData);
-        console.log(response);
     
         // puppeteer로 실행된 브라우저 종료
         await browser.close();
+
+        if(response === null) {
+            throw new NotFoundException(`유저코드가 ${friendCode}인 유저를 찾을 수 없습니다!!`);
+        }
+
+        // response는 null로 인해 위에서 걸리는게 아니라면 { name, rating }
+        return response;
     }
 
     async createUser(createUserDto: createUserDto) {
-        const { friendCode, isJp} = createUserDto;
+        const { friendCode, isJp } = createUserDto;
         
-        await this.searchUser(friendCode, isJp);
-    } 
+        const response = await this.searchUser(friendCode, isJp);
+        const { name, rating } = response; 
+
+        const user = this.userModel.create({
+            friendCode,
+            name,
+            rating
+        });
+
+        return user;
+    }
 }

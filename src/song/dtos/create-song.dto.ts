@@ -1,5 +1,5 @@
 import { IsIn, IsInt, IsNotEmpty, IsOptional, IsString, Min } from "class-validator";
-import { SongConstants } from "../song-constants";
+import { SongConstants } from "../../constants/song.constants";
 
 export class CreateSongDto {
     @IsString()

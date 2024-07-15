@@ -1,6 +1,6 @@
 import { IsIn, IsMongoId, IsNotEmpty, IsNumber, IsOptional, IsString, Min} from "class-validator";
 import { Types } from "mongoose";
-import { PatternConstants } from "../pattern-constants";
+import { PatternConstants } from "../../constants/pattern.constants";
 
 export class CreatePatternDto {
     @IsIn(PatternConstants.PATTERN_DIFFICULTIES)

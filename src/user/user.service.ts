@@ -3,7 +3,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { User } from './schemas/user.schema';
 import { UserDto } from './dtos/user.dto';
-import { INTL_LOGIN_PAGE, INTL_FRIEND_URL, JP_LOGIN_PAGE, JP_FRIEND_URL } from './constants/url';
+import { UrlConstants } from '../constants/url.constants';
 
 const puppeteer = require('puppeteer');
 require("dotenv").config({path: "../.env"});
@@ -37,8 +37,8 @@ export class UserService {
         const browser = await puppeteer.launch();
         const page = await browser.newPage();
         
-        const loginPage = isJP ? JP_LOGIN_PAGE : INTL_LOGIN_PAGE;
-        const friendUrl = isJP ? JP_FRIEND_URL : INTL_FRIEND_URL;
+        const loginPage = isJP ? UrlConstants.JP_LOGIN_PAGE : UrlConstants.INTL_LOGIN_PAGE;
+        const friendUrl = isJP ? UrlConstants.JP_FRIEND_URL : UrlConstants.INTL_FRIEND_URL;
     
         
         await page.goto(loginPage)

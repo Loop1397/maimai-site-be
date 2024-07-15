@@ -1,6 +1,6 @@
 import { IsIn, IsMongoId, IsNotEmpty, IsNumber, IsOptional, IsString, Min } from "class-validator";
 import { Types } from "mongoose";
-import { PatternConstants } from "../pattern-constants";
+import { PatternConstants } from "../../constants/pattern.constants";
 
 export class UpdatePatternDto {
     // IsOptional : 주어진 값이 empty(=== null, === undefined)하다면 validator에서 해당 속성을 무시함

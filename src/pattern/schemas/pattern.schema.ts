@@ -1,7 +1,6 @@
 import { Prop, Schema, SchemaFactory, SchemaOptions } from "@nestjs/mongoose";
-import { Song } from "src/song/schemas/song.schema";
 import mongoose, { Document, Types  } from "mongoose";
-import { PatternConstants } from "../pattern-constants";
+import { PatternConstants } from "../../constants/pattern.constants";
 
 const options: SchemaOptions = {
     collection: 'pattern',

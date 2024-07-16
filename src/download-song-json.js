@@ -19,14 +19,17 @@ const downloadJsonFile = async (url, filePath) => {
         // 일본어 자판 ＆(아마 전각문자)를 영어 자판의 &로 바꿈
         jsonData.forEach(element => {
             element.catcode = element.catcode.replace(`＆`, `&`);
+
+            // std, dx두 가지 패턴을 모두 가진 곡 찾기
+            if (Object.keys(element).length >= 16) console.log(element.title);
         });
 
         fs.writeFileSync(filePath, JSON.stringify(jsonData, null, 2));
         console.log(`download success!!!!!!`);
         /** 
          * TODO
-         * [ ] : version 코드 분석 후 분류하기
-         * [ ] : std, dx두가지 패던이 전부 있는 케이스 구분
+         * [x] : version 코드 분석 후 분류하기
+         * [x] : std, dx두가지 패턴이 전부 있는 케이스 구분
          * [ ] : 다운로드한 json 데이터 가공해서 db에 넣는 코드 작성
          * [ ] : 각 곡의 이미지파일 다운로드 이후 cloudfront등에 업로드
          */
@@ -36,6 +39,6 @@ const downloadJsonFile = async (url, filePath) => {
 }
 
 const url = 'https://maimai.sega.jp/data/maimai_songs.json';
-const filePath = path.join(__dirname, '..', 'data/maimai_songs.json');
+const filePath = path.join(__dirname, '..', 'db/maimai_songs.json');
 
 downloadJsonFile(url, filePath);
